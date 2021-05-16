@@ -46,7 +46,7 @@ module.exports = (app) => {
         return context.octokit.issues.addLabels(
             context.issue({
                 issue_number: context.payload.issue.number,
-                labels: ["Reopened", "Reviewed by ZypeGitBot"]
+                labels: ["Reopened", "Reviewed by Compass"]
             })
         )
     });
@@ -77,6 +77,20 @@ module.exports = (app) => {
         return context.octokit.issues.unlock(
             context.issue({
                 issue_number: context.payload.issue.number
+            })
+        )
+    })
+
+    app.on("pull_request.ready_for_review", async(context) => {
+        context.octokit.pulls.createReviewComment(
+            context.pullRequest({
+                pull_number: context.payload.pull_request.number,
+                body: "This Pull is reviewed by CompassBot."
+            })
+        )
+        return context.octokit.pulls.submitReview(
+            context.pullRequest({
+                pull_number: context.payload.pull_request.number
             })
         )
     })
